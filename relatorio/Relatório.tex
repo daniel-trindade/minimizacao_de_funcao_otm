@@ -1,0 +1,285 @@
+%%%%%%%%%%%% STRUCTURE %%%%%%%%%%%%%%%
+\documentclass[a4paper,12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{lmodern}
+\usepackage{setspace}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%% PAGES STYLE %%%%%%%%%
+\usepackage{fancyhdr}
+\fancypagestyle{main}{
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[RO]{\thepage}
+\fancyfoot[CO]{}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{subfig}
+\usepackage{mathptmx}
+\usepackage{changepage}
+%\usepackage[alf]{abntex2cite}
+
+%%%%%%%%%%% PDF METADATA %%%%%%%%%%%%%
+\usepackage[ pdftitle={RELATÓRIO DE ANALISE DE MINIMIZAÇÃO DE FUNÇÕES POR ALGORITMOS GENETICOS E ENXAME DE PARTICULAS},
+pdfsubject={MINIMIZAÇÃO DE FUNÇÕES},
+pdfkeywords={minimização, algoritmos, geneticos, enxame, particulas},
+hidelinks]{hyperref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\onehalfspacing
+
+\thispagestyle{empty}
+
+\setcounter{page}{1}
+
+%%%%%%%%%%%% LOGOS %%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[!ht]
+
+\centering
+
+\subfloat{
+\includegraphics[width=2.7cm]{imgs/UFRN.pdf}
+\label{UFRN Logo}
+}
+\hspace{11.09cm}
+\subfloat{
+\includegraphics[width=2.4cm]{imgs/DCA.pdf}
+\label{DCA Logo}
+}
+
+%\caption{}
+\label{Logos}
+
+\end{figure}
+
+%%%%%%%%%%%%%%% CAPA %%%%%%%%%%%%%%%%%
+
+\vspace{-1cm}
+
+\begin{center}
+{\bf{\normalsize UNIVERSIDADE FEDERAL DO RIO GRANDE DO NORTE\\
+DEPARTAMENTO DE ENGENHARIA DE COMPUTAÇÃO E AUTOMAÇÃO\\
+CURSO DE ENGENHARIA DE COMPUTAÇÃO\\
+OTIMIZAÇÃO DE SISTEMAS
+}}
+
+
+\vspace{3.6cm}
+
+{\bf{\large RELATÓRIO DO TRABALHO DE MINIMIZAÇÃO DE FUNÇÕES\\
+ATRAVÉS DE ALGORITMOS GENÉTICOS E ENXAME DE PARTÍCULAS\\
+}}
+\vspace{1.5cm}
+
+
+\vspace{5.6cm}
+
+
+
+\begin{flushright}
+\begin{normalsize}
+DANIEL BRUNO TRINDADE DA SILVA - 20230093910\\
+
+\end{normalsize}
+\end{flushright}
+
+
+\vspace{6.5cm}
+
+{\large Natal-RN\\
+2025.2}
+\end{center}
+
+\newpage
+
+%%%%%%%%%%%%%%%  RESUMO %%%%%%%%%%%%%%
+
+\thispagestyle{empty}
+
+\begin{center}
+{\large \textbf{RESUMO}}
+\end{center}
+
+\vspace{3cm}
+
+\begin{flushleft}
+
+\hspace{4ex}Trata-se da apresentação fiel, breve e concisa dos aspectos mais relevantes do
+trabalho, apresentando as ideias essenciais, na mesma progressão e no mesmo
+encadeamento que aparecem no texto. O resumo deve apresentar os objetivos, uma
+visão geral, ampla e, ao mesmo tempo, clara e objetiva do conteúdo do trabalho.\\
+\hspace{4ex}A norma da ABNT recomenda que se use de 150 a 500 palavras, em espaço
+simples, e deve-se usar o verbo na voz ativa e na terceira pessoa singular. Logo abaixo,
+devem ser colocadas as palavras-chave.\\
+
+\end{flushleft}
+
+\vspace{1.5cm}
+
+\textbf{Palavras-chave:}
+
+\newpage
+
+%%%% LISTA DE ABREVIATURAS E SIGLAS %%
+
+\thispagestyle{empty}
+
+\begin{center}
+{\large \textbf{LISTA DE ABREVIATURAS E SIGLAS}}
+\end{center}
+
+\vspace{3cm}
+
+\begin{tabular}{ l l }
+AG\hspace{1.5cm} & Algoritmo Genético.\\
+PSO\hspace{1.5cm} & \textit{Particle Swarm Optimization} (Otimização por Enxame de Partículas)\\
+
+\end{tabular}
+
+\newpage
+
+%%%%%%%%% LISTA DE FIGURAS %%%%%%%%%%%
+
+\thispagestyle{empty}
+
+\begin{center}
+\listoffigures
+\end{center}
+
+\newpage
+
+%%%%%%%%%%%%%%% SUMÁRIO %%%%%%%%%%%%%%
+
+\thispagestyle{empty}
+
+\begin{center}
+\tableofcontents
+\end{center}
+
+\newpage
+
+%%%%%%%%%%%%%%% INTRODUÇÃO %%%%%%%%%%%
+
+\thispagestyle{main}
+
+\section{INTRODUÇÃO}
+
+\hspace{4ex}A otimização de funções matemáticas complexas é um desafio central em diversas áreas da engenharia. Quando o espaço de busca é vasto e a função objetivo apresenta múltiplos mínimos locais, métodos analíticos tradicionais tornam-se ineficientes. Nesse contexto, algoritmos metaheurísticos inspirados na natureza destacam-se como soluções robustas para encontrar o ótimo global.
+
+O presente trabalho tem como objetivo implementar e analisar o desempenho de duas das principais técnicas de computação evolucionária e inteligência: o Algoritmo Genético (AG) e a Otimização por Enxame de Partículas (PSO - \textit{Particle Swarm Optimization})1. A meta é minimizar a função objetivo composta definida pela combinação $W29 + W1$, conforme designado na especificação do projeto.
+
+Para além da simples obtenção do mínimo global, este estudo foca na análise comparativa do custo computacional de cada abordagem. Conforme os requisitos propostos, foram mensuradas a quantidade de avaliações da função objetivo e o número de operações aritméticas (multiplicações e divisões) necessárias para a convergência. A estabilidade dos algoritmos também foi avaliada estatisticamente, verificando a taxa de sucesso na convergência em múltiplas execuções independentes.
+
+O desenvolvimento foi realizado utilizando a linguagem Python, escolhida pela sua capacidade de prototipagem rápida e bibliotecas de manipulação numérica, permitindo uma instrumentação precisa do código para a coleta das métricas de desempenho exigidas.
+
+\newpage
+
+%%%%%%%%%% REFERENCIAL TEÓRICO %%%%%%%
+
+\thispagestyle{main}
+
+\section{REFERENCIAL TEÓRICO}
+
+A resolução de problemas de otimização não-linear, especialmente aqueles com múltiplas variáveis e ótimos locais, frequentemente excede a capacidade de métodos analíticos tradicionais baseados em gradiente. Nestes cenários, algoritmos metaheurísticos inspirados na natureza demonstram eficácia superior na exploração do espaço de busca global.
+
+\subsection{Algoritmos Genéticos (AG)} 
+
+Desenvolvidos inicialmente por John Holland na década de 1960 e popularizados por David Goldberg, os Algoritmos Genéticos são técnicas de busca estocástica baseadas nos princípios da seleção natural e genética de populações (HOLLAND, 1975).
+
+O funcionamento do AG baseia-se na evolução de uma população de indivíduos (candidatos à solução) ao longo de gerações. A aptidão (\textit{fitness}) de cada indivíduo determina sua probabilidade de sobrevivência e reprodução, seguindo a premissa Darwiniana de que os mais aptos tendem a propagar suas características (GOLDBERG, 1989).
+
+Os principais operadores que conduzem a busca são:
+
+\begin{itemize}
+	\item \textbf{Seleção:} Mecanismo que escolhe os pais para a reprodução. Neste trabalho, utiliza-se o método da Roleta, onde a probabilidade de seleção de um indivíduo é proporcional à sua aptidão relativa na população.
+	\item \textbf{Cruzamento (\textit{Crossover}):} Processo de recombinação genética onde dois pais trocam informações para gerar descendentes. Para problemas com variáveis contínuas (codificação real), utilizam-se operadores aritméticos ou mistos, como o BLX-$\alpha$, que permitem explorar o espaço entre os pais (HERRERA et al., 1998).
+	\item \textbf{Mutação:} Operador responsável por manter a diversidade genética da população, introduzindo pequenas perturbações aleatórias nos genes, evitando a convergência prematura para mínimos locais (MITCHELL, 1998).
+\end{itemize}
+
+\subsection{Otimização por Enxame de Partículas (PSO)}
+
+A Otimização por Enxame de Partículas é um algoritmo metaheurístico proposto por Kennedy e Eberhart em 1995, inspirado no comportamento social de organismos simples, como bandos de pássaros ou cardumes de peixes (KENNEDY; EBERHART, 1995).
+
+Diferente do AG, o PSO não utiliza operadores de evolução (como cruzamento ou mutação). Em vez disso, mantém uma população de partículas que "voam" pelo hiperespaço de busca. Cada partícula ajusta sua trajetória baseando-se em duas experiências:
+
+\begin{enumerate}
+	\item Cognitiva ($p_{best}$): A melhor posição encontrada pela própria partícula até o momento.
+	\item Social ($g_{best}$): A melhor posição encontrada por qualquer partícula do enxame (vizinhança).
+\end{enumerate}
+
+Matematicamente, a velocidade ($v$) e a posição ($x$) de cada partícula $i$ são atualizadas pelas equações:
+
+$$v_{i}(t+1) = w \cdot v_{i}(t) + c_1 \cdot r_1 \cdot (p_{best} - x_{i}(t)) + c_2 \cdot r_2 \cdot (g_{best} - x_{i}(t))$$$$x_{i}(t+1) = x_{i}(t) + v_{i}(t+1)$$
+
+Onde $c_1$ e $c_2$ são coeficientes de aceleração (cognitivo e social) e $r_1, r_2$ são valores aleatórios. O parâmetro $w$ (peso de inércia), introduzido posteriormente por Shi e Eberhart (1998), é crucial para controlar o balanço entre a exploração global (\textit{exploration}) e o refinamento local (\textit{exploitation}).
+
+
+\newpage
+
+%%%%%%%%%% METODOLOGIA %%%%%%%%%%%%%%%
+
+\thispagestyle{main}
+
+\section{METODOLOGIA}
+
+
+\hspace{4ex}A metodologia é caracterizada pela explicação minuciosa dos procedimentos
+técnicos realizados durante todo o trabalho.
+
+\subsection{Seções}
+
+\subsubsection{Subseções}
+
+\newpage
+
+%%%%%%%%%% RESULTADOS %%%%%%%%%%%%%%%
+
+\thispagestyle{main}
+
+\section{RESULTADOS}
+
+
+\hspace{4ex}Neste capítulo, são apresentados e descritos os resultados obtidos dos experimentos feitos em laboratório. É importante que todos os gráficos e figuras apresentados neste capítulo estejam bem visíveis e com qualidade boa. Este é o capítulo mais importante do trabalho, pois é nele que o aluno irá descrever todos os resultados e observações obtidos no experimento.
+
+\subsection{Seções}
+
+\subsubsection{Subseções}
+
+\newpage
+
+%%%%%%%%%% CONCLUSÃO %%%%%%%%%%%%%%%
+
+\thispagestyle{main}
+
+\section{CONCLUSÃO}
+
+
+\hspace{4ex}A conclusão, além de guardar uma proporção relativa ao tamanho do trabalho,
+deve guardar uma proporcionalidade também quanto ao conteúdo. Não deve conter
+assuntos desnecessários, nem exageros numa linguagem excessivamente técnica e
+rebuscada. A conclusão deve dar respostas às questões do trabalho, correspondente aos
+objetivos propostos. Deve ser breve, podendo, se necessário, apresentar sugestões para
+pesquisas futuras.
+
+\newpage
+
+%%%%%%%% REFERÊNCIAS %%%%%%%%%%%%%%%%%
+
+% Referências bibliogáficas (geradas automaticamente)
+\addcontentsline{toc}{chapter}{Referências bibliográficas}
+\bibliography{bib/bibliografia}
+
+\appendix
+
+%Apêndice A
+\include{apendice}
+
+\end{document}
