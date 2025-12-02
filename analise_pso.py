@@ -316,17 +316,17 @@ def save_summary_to_csv(results_df, algorithm_name="PSO", num_runs=1, pso_params
 
 if __name__ == "__main__": # Este bloco de código só será executado quando o script for rodado diretamente (não quando importado como módulo).
     # --- VARIÁVEL PARA CONTROLAR QUANTAS VEZES O CÓDIGO RODA ---
-    num_repeticoes_simulacao = 20 # Define o número de vezes que o algoritmo PSO será executado para coletar estatísticas.
+    num_repeticoes_simulacao = 10 # Define o número de vezes que o algoritmo PSO será executado para coletar estatísticas.
 
     # --- Configuração dos Parâmetros do PSO ---
     # Define os parâmetros específicos do algoritmo PSO que serão utilizados em todas as simulações.
     limites_funcao = (-500, 500) # Define os limites do domínio da função objetivo (para as coordenadas x e y).
-    num_particulas = 15 # Define o número de partículas (agentes) no enxame do PSO.
+    num_particulas = 50 # Define o número de partículas (agentes) no enxame do PSO.
     num_iteracoes = 100 # Número MÁXIMO de iterações que cada execução do PSO pode rodar.
     w_max = 0.9 # Valor máximo do peso de inércia, geralmente usado no início para mais exploração.
     w_min = 0.4 # Valor mínimo do peso de inércia, usado no final para mais explotação.
-    c1 = 2 # Coeficiente cognitivo, controla a influência do melhor histórico individual da partícula.
-    c2 = 2 # Coeficiente social, controla a influência do melhor histórico global do enxame.
+    c1 = 3.5 # Coeficiente cognitivo, controla a influência do melhor histórico individual da partícula.
+    c2 = 0.5 # Coeficiente social, controla a influência do melhor histórico global do enxame.
     tolerancia = 1e-6 # Um pequeno valor que define a tolerância para a convergência (quão pequena a mudança no melhor valor deve ser para parar).
     iteracoes_sem_melhora_limite = 20 # Número de iterações consecutivas sem melhora significativa que acionará o critério de parada.
 

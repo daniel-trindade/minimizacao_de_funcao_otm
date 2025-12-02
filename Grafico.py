@@ -121,7 +121,7 @@ def GraficoAG(populacao, melhor_solucao, iteracao, ax, melhor_aptidao_global, ag
     # Plota a superfície da função objetivo
     surf = ax.plot_surface(X, Y, Z, color='lightgray', alpha=0.5, rstride=5, cstride=5)
 
-    population_color = 'cyan' # Cor para os indivíduos da população
+    population_color = 'blue' # Cor para os indivíduos da população
     best_solution_color = 'red' # Cor para a melhor solução global
 
     for individuo in populacao: # Itera sobre cada indivíduo na população

@@ -5,6 +5,7 @@
 \usepackage[brazil]{babel}
 \usepackage{lmodern}
 \usepackage{setspace}
+\usepackage{float}
 \usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -128,34 +129,6 @@ devem ser colocadas as palavras-chave.\\
 
 \newpage
 
-%%%% LISTA DE ABREVIATURAS E SIGLAS %%
-
-\thispagestyle{empty}
-
-\begin{center}
-{\large \textbf{LISTA DE ABREVIATURAS E SIGLAS}}
-\end{center}
-
-\vspace{3cm}
-
-\begin{tabular}{ l l }
-AG\hspace{1.5cm} & Algoritmo Genético.\\
-PSO\hspace{1.5cm} & \textit{Particle Swarm Optimization} (Otimização por Enxame de Partículas)\\
-
-\end{tabular}
-
-\newpage
-
-%%%%%%%%% LISTA DE FIGURAS %%%%%%%%%%%
-
-\thispagestyle{empty}
-
-\begin{center}
-\listoffigures
-\end{center}
-
-\newpage
-
 %%%%%%%%%%%%%%% SUMÁRIO %%%%%%%%%%%%%%
 
 \thispagestyle{empty}
@@ -188,11 +161,11 @@ O desenvolvimento foi realizado utilizando a linguagem Python, escolhida pela su
 
 \section{REFERENCIAL TEÓRICO}
 
-A resolução de problemas de otimização não-linear, especialmente aqueles com múltiplas variáveis e ótimos locais, frequentemente excede a capacidade de métodos analíticos tradicionais baseados em gradiente. Nestes cenários, algoritmos metaheurísticos inspirados na natureza demonstram eficácia superior na exploração do espaço de busca global.
+\hspace{4ex}A resolução de problemas de otimização não-linear, especialmente aqueles com múltiplas variáveis e ótimos locais, frequentemente excede a capacidade de métodos analíticos tradicionais baseados em gradiente. Nestes cenários, algoritmos metaheurísticos inspirados na natureza demonstram eficácia superior na exploração do espaço de busca global.
 
 \subsection{Algoritmos Genéticos (AG)} 
 
-Desenvolvidos inicialmente por John Holland na década de 1960 e popularizados por David Goldberg, os Algoritmos Genéticos são técnicas de busca estocástica baseadas nos princípios da seleção natural e genética de populações (HOLLAND, 1975).
+\hspace{4ex}Desenvolvidos inicialmente por John Holland na década de 1960 e popularizados por David Goldberg, os Algoritmos Genéticos são técnicas de busca estocástica baseadas nos princípios da seleção natural e genética de populações (HOLLAND, 1975).
 
 O funcionamento do AG baseia-se na evolução de uma população de indivíduos (candidatos à solução) ao longo de gerações. A aptidão (\textit{fitness}) de cada indivíduo determina sua probabilidade de sobrevivência e reprodução, seguindo a premissa Darwiniana de que os mais aptos tendem a propagar suas características (GOLDBERG, 1989).
 
@@ -231,12 +204,78 @@ Onde $c_1$ e $c_2$ são coeficientes de aceleração (cognitivo e social) e $r_1
 \section{METODOLOGIA}
 
 
-\hspace{4ex}A metodologia é caracterizada pela explicação minuciosa dos procedimentos
-técnicos realizados durante todo o trabalho.
+\hspace{4ex}Esta seção detalha a abordagem computacional adotada para a minimização da função objetivo $W_{29} + W_1$. Os algoritmos foram implementados em linguagem Python, utilizando a biblioteca NumPy para operações vetoriais de alto desempenho e Matplotlib para a geração gráfica dos resultados.
 
-\subsection{Seções}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{./imgs/w29+w1.png}
+	\caption{Função $W29 + W1$.}
+	\label{fig:W29 + W1}
+\end{figure}
 
-\subsubsection{Subseções}
+Para garantir a reprodutibilidade e a análise comparativa exigida, o código foi instrumentado com contadores globais de operações aritméticas, permitindo a mensuração exata do custo computacional independente do hardware utilizado.
+
+\subsection{Definição da Função Objetivo}
+\hspace{4ex}A função a ser minimizada é a composição $f(x, y) = W_{29}(x, y) + W_1(x, y)$, definida no domínio de busca $x, y \in [-500, 500]$. A implementação computacional da função respeitou rigorosamente a precedência de operadores e as funções auxiliares (como $z$, $r$, $r1$ e $rd$) descritas na especificação do problema, garantindo a fidelidade matemática ao modelo original em Scilab.
+
+\subsection{Implementação do Algoritmo Genético (AG)}
+
+\hspace{4ex}O Algoritmo Genético foi configurado para operar com codificação real (ponto flutuante), onde cada gene do cromossomo corresponde diretamente ao valor de uma variável de decisão ($x$ ou $y$). Esta abordagem evita a perda de precisão associada à conversão binária em domínios contínuos.
+
+A estrutura do Algoritmo segue os seguinte parâmetros e operadores:
+
+\begin{itemize}
+	\item \textbf{População}: A escolha do tamanho da população nos leva a um \textit{trade-off} entre o quanto seremos capazes de explorar (para valores pequenos) da função e o custo computacional que a simulação vai demandar (para populações grandes). Para as simulações realizadas foram escolhidos os seguintes valores 20, 50, 100 e 200.
+	
+	\item \textbf{Seleção por Roleta}: Foi adotado o método da Roleta (Roulette Wheel Selection), conforme requisito do projeto. Para adequação ao problema de minimização, a aptidão (fitness) de cada indivíduo foi normalizada inversamente, de modo que menores valores da função objetivo resultassem em maiores fatias na roleta virtual, ou seja, maior probabilidade de reprodução.
+	
+	\item \textbf{Cruzamento (Crossover):} Utilizou-se o operador BLX-$\alpha$ (Blend Crossover) com $\alpha = 0.5$. Este operador permite que os filhos sejam gerados em um intervalo que excede ligeiramente a distância entre os pais, promovendo a exploração de novas regiões do espaço de busca. Com relação a taxa de Cruzamento, a variamos para ver como ela influencia nos resultados obtidos, os valores assumidos foram de 50\%, 70\%, 90\% e 100\%.
+	
+	\item \textbf{Mutação:} Tal qual os demais parâmetros realizamos testes com diferentes taxas de mutação, a saber 1\%, 5\% 10\% e 20\%. Quando ativada, o gene é substituído por um novo valor aleatório dentro do domínio, garantindo a diversidade genética e evitando estagnação em mínimos locais.
+	
+	\item \textbf{Critério de Parada:} O algoritmo encerra-se após 200 gerações ou caso não haja melhoria significativa (tolerância de $10^{-6}$) na melhor solução global por 20 gerações consecutivas.
+\end{itemize}
+
+\subsection{Implementação do Enxame de Partículas (PSO)}
+
+\hspace{4ex}O método PSO foi implementado utilizando uma topologia global, onde todas as partículas têm acesso à melhor posição encontrada pelo enxame ($g_{best}$).
+
+A estrutura do Algoritmo segue os seguinte parâmetros e operadores:
+
+\begin{itemize}
+	\item \textbf{Enxame:} No PSO, o tamanho do enxame (número de partículas) é o parâmetro que define a cobertura espacial inicial. Esse parâmetro traz consigo o mesmo \textit{trade-off} que o tamanho da população no AG: Custo computacional \textit{vs} Área de cobertura. Para nossas simulações utilizamos 10, 30, 50 e 100 partículas;
+	
+	\item \textbf{Coeficientes de Aceleração:}Os parâmetros $c_1$ (Cognitivo) e $c_2$ (Social) definem a "personalidade" do enxame. Eles controlam o cabo de guerra entre a "insistência" da partícula em voltar para onde ela já encontrou bons resultados ($c_1$) e a "inveja" de ir para onde o vizinho está se dando bem ($c_2$). Esses parâmetros foram testados da seguinte forma:
+		\begin{itemize}
+			\item \textbf{Enxame Equilibrado}: $c_1 = 2.0$ e $c_2 = 2.0$
+			\item \textbf{Enxame Individualista:} $c_1 = 3.5$ e $c_2 = 0.5$
+			\item \textbf{Enxame Social:} $c_1 = 0.5$ e $c_2 = 3.5$
+			\item \textbf{Enxame Letárgico:} $c_1 = 0.5$ e $c_2 = 0.5$
+		\end{itemize}
+	 
+	
+	\item \textbf{Peso de Inércia ($w$):} Implementou-se um mecanismo de Inércia Dinâmica Linearmente Decrescente, variando de $w_{max} = 0.9$ (início da busca, favorecendo exploração) até $w_{min} = 0.4$ (fim da busca, favorecendo refinamento/explotação).
+	
+	\item \textbf{Critério de Parada:} Máximo de 100 iterações ou estagnação da convergência por 20 iterações consecutivas.
+\end{itemize}
+
+\subsection{Simulações}
+
+\hspace{4ex}Devido à natureza estocástica dos algoritmos metaheurísticos, onde operadores probabilísticos (como a inicialização aleatória, a roleta no AG ou os vetores randômicos no PSO) influenciam diretamente o caminho da busca, uma única execução não é suficiente para atestar a qualidade de uma solução.
+
+Para garantir a validade estatística dos resultados e mitigar a influência da aleatoriedade, adotou-se o seguinte protocolo experimental:
+
+\begin{itemize}
+	\item \textbf{Planejamento Fatorial:} Foram definidos cenários de teste distintos para cada algoritmo (conforme já detalhado acima), variando-se sistematicamente os parâmetros de controle ($C_1, C_2, N$ para o PSO e Tamanho, Cruzamento, Mutação para o AG).
+	
+	\item \textbf{Repetições Independentes:} Para cada um desses conjuntos de parâmetros, foram realizadas 10 simulações independentes. A cada nova execução, a semente aleatória (\textit{random seed}) foi alterada, garantindo que a população/enxame iniciasse em posições distintas do espaço de busca.
+	
+	\item \textbf{Consolidação dos Dados:} Ao final das 10 execuções de um cenário, as métricas de desempenho (melhor valor encontrado, número de avaliações e iteração de convergência) foram computadas para extração da Média e do Desvio Padrão.
+\end{itemize}
+
+
+Desta forma, a análise de desempenho apresentada neste trabalho baseia-se no comportamento médio e na estabilidade (robustez) do algoritmo frente a diferentes condições iniciais, totalizando 160 execuções computacionais (90 para o AG e 70 para o PSO).
+
 
 \newpage
 
@@ -247,11 +286,543 @@ técnicos realizados durante todo o trabalho.
 \section{RESULTADOS}
 
 
-\hspace{4ex}Neste capítulo, são apresentados e descritos os resultados obtidos dos experimentos feitos em laboratório. É importante que todos os gráficos e figuras apresentados neste capítulo estejam bem visíveis e com qualidade boa. Este é o capítulo mais importante do trabalho, pois é nele que o aluno irá descrever todos os resultados e observações obtidos no experimento.
+\hspace{4ex}Nesta seção, são apresentados e discutidos os resultados experimentais obtidos a partir da aplicação dos algoritmos Genético (AG) e Enxame de Partículas (PSO) na minimização da função objetivo $W_{29} + W_1$. A análise subsequente foca na avaliação comparativa da robustez (capacidade de atingir o mínimo global), na velocidade de convergência e no custo computacional (mensurado pelo número de avaliações da função e operações aritméticas) de cada abordagem
 
-\subsection{Seções}
+\subsection{Algoritmo Genético (AG)}
 
-\subsubsection{Subseções}
+\hspace{4ex}Inicialmente fixamos os valores dos parâmetros Mutação e Cruzamento em 5\% e 70\% respectivamente e então variamos o tamanho da população. Assim tivemos os seguintes resultados
+
+\subsubsection{População=20 Mutação=0.05 Cruzamento=0.7}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=20 mult=0.05 cruz=0.7.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img1}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=20 mult=0.05 cruz=0.7 Barras.png}
+		\caption{Estatísticas}
+		\label{fig:img2}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{População=50 Mutação=0.05 Cruzamento=0.7}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.05 cruz=0.7.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img3}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.05 cruz=0.7 Barras.png}
+		\caption{Estatísticas}
+		\label{fig:img4}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{População=100 Mutação=0.05 Cruzamento=0.7}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=100 mult=0.05 cruz=0.7.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img5}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=100 mult=0.05 cruz=0.7 Barras.png}
+		\caption{Estatísticas}
+		\label{fig:img6}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{População=200 Mutação=0.05 Cruzamento=0.7}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=200 mult=0.05 cruz=0.7.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img7}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=200 mult=0.05 cruz=0.7 Barras.png}
+		\caption{Estatísticas}
+		\label{fig:img8}
+	\end{minipage}
+	
+\end{figure}
+
+\hspace{4ex}Agora fixamos a População em 50 pois foi o valor que melhor desempenhou ao minimizar a função com menor custo computacional e fixamos o valor de cruzamento em 70\%.
+
+\subsubsection{População=50 Mutação=0.01 Cruzamento=0.7}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.01 cruz=0.7.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img9}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.01 cruz=0.7 Barras.png}
+		\caption{Estatísticas}
+		\label{fig:img10}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{População=50 Mutação=0.05 Cruzamento=0.7}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.05 cruz=0.7.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img11}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.05 cruz=0.7 Barras.png}
+		\caption{Estatísticas}
+		\label{fig:img12}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{População=50 Mutação=0.1 Cruzamento=0.7}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.1 cruz=0.7.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img13}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.1 cruz=0.7 Barras.png}
+		\caption{Estatísticas}
+		\label{fig:img14}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{População=50 Mutação=0.2 Cruzamento=0.7}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.2 cruz=0.7.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img15}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.2 cruz=0.7 Barras.png}
+		\caption{Estatísticas}
+		\label{fig:img16}
+	\end{minipage}
+	
+\end{figure}
+
+\hspace{4ex}Agora manteremos fixos os valores de População em 50 e mutação em 0,05 a vamos analisar a dinâmica de mudança no parâmetro de cruzamento
+
+\subsubsection{População=50 Mutação=0.05 Cruzamento=0.5}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.05 cruz=0.5.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img17}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.05 cruz=0.5 Barras.png}
+		\caption{Estatísticas}
+		\label{fig:img18}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{População=50 Mutação=0.05 Cruzamento=0.7}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.05 cruz=0.7.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img19}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.05 cruz=0.7 Barras.png}
+		\caption{Estatísticas}
+		\label{fig:img20}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{População=50 Mutação=0.05 Cruzamento=1.0}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.05 cruz=1.0.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img21}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_AG/pop=50 mult=0.05 cruz=1.0 Barras.png}
+		\caption{Estatísticas}
+		\label{fig:img22}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{Tabela de consolidação dos dados levantados:}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lrrrrrrr}
+		\hline
+		\textbf{N} & 
+		\textbf{Configuração} & 
+		\textbf{Total de Cálculos} &
+		\textbf{Geração} &
+		\textbf{Melhor Valor} \\
+		\hline
+		1 &  Pop=20 Mut=0,05 Cruz=0,7   & 17293  & 41,3 & -2532,56 \\
+		2 &  Pop=50 Mut=0,1 Cruz=0,7    & 62085  & 51,2 & -3038,14 \\
+		3 &  Pop=50 Mut=0,01 Cruz=0,7   & 43894  & 42,2 & -2689,25 \\
+		4 &  Pop=50 Mut=0,2 Cruz=0,7    & 81928  & 61   & -3180,84 \\
+		5 &  Pop=50 Mut=0,05 Cruz=0,5   & 59177  & 49,9 & -2981,64 \\
+		6 &  Pop=50 Mut=0,05 Cruz=0,7   & 37015  & 38,8 & -3135,21 \\
+		7 &  Pop=50 Mut=0,05 Cruz=1,0   & 27290  & 33,9 & -2854,92 \\
+		8 &  Pop=100 Mut=0,05 Cruz=0,7  & 112639 & 48,6 & -3225,81 \\
+		9 &  Pop=200 Mut=0,05 Cruz=0,7  & 135632 & 37,5 & -3028,88 \\
+		\hline
+	\end{tabular}
+	\caption{Resultados dos experimentos do Algoritmo Genético}
+\end{table}
+
+\hspace{4ex} De posse dessas informações podemos realizar algumas analises:
+
+\begin{enumerate}
+	\item \textbf{Análise do Tamanho da População} (Trade-off Custo x Qualidade)
+	Comparando as linhas onde Mut=0,05 e Cruz=0,7 (linhas 1, 6, 8 e 9), vemos claramente o impacto da escala:
+	
+	\begin{itemize}
+		\item \textbf{População Pequena (20):} Teve o menor custo computacional (17.293 cálculos), mas o pior resultado de todos (-2.532). Isso é um sinal clássico de Convergência Prematura. Havia pouca diversidade genética, e o algoritmo ficou preso em um mínimo local ruim rapidamente.
+		
+		\item \textbf{População Média (50):} Atingiu um valor excelente (-3.135) com um custo muito baixo (37.015). Parece ser o "ponto ideal" (\textit{sweet spot}) de eficiência.
+		
+		\item \textbf{População Grande (100):} Encontrou o melhor valor absoluto da tabela (-3.225,81). No entanto, o custo computacional saltou para 112.639 (3x mais que a população de 50).
+		
+		\item \textbf{População Muito Grande (200):} Aqui vemos o efeito de retornos decrescentes. O custo foi o maior de todos (135.632), mas o resultado (-3.028) foi pior que o da população de 100 e até pior que a de 50. Isso sugere que apenas aumentar a população cegamente não garante melhoria e desperdiça recursos.
+	\end{itemize}
+	
+	\item \textbf{Influência da Taxa de Mutação} (Estabilidade vs. Exploração)
+	Focando nas linhas com Pop=50 e Cruz=0,7 (linhas 2, 3, 4 e 6):
+	\begin{itemize}
+		\item \textbf{Mutação Baixa (0,01):} Resultado fraco (-2.689). O algoritmo provavelmente perdeu diversidade muito rápido e estagnou.
+		
+		\item \textbf{Mutação Moderada (0,05):} Resultado muito bom (-3.135) com o menor custo deste grupo (37k). Convergiu rápido (geração 38,8).
+		
+		\item \textbf{Mutação Alta (0,1):} O "Vale" de Desempenho: É curioso notar que a taxa de 20\% (0,2) obteve um resultado melhor (-3.180) que a de 10\% (-3.038)
+		
+		\item \textbf{Mutação Alta (0,2):} Surpreendentemente, obteve um resultado muito bom (-3.180), superando a mutação moderada em qualidade. Porém, observe o custo e a geração: o custo dobrou (81.928) e a convergência foi a mais tardia da tabela (geração 61).
+	\end{itemize}
+	
+	\item \textbf{Impacto da Taxa de Cruzamento} Comparando as linhas 5, 6 e 7 (fixando Pop=50 e Mut=0,05):
+	
+	\begin{itemize}
+		\item \textbf{Cruzamento 0,5 (50\%):} Resultado mediano (-2.981) com custo alto (59k). Preservar demais os pais não foi benéfico.
+		
+		\item \textbf{Cruzamento 0,7 (70\%):} Foi o vencedor claro neste cenário (-3.135).
+		
+		\item \textbf{Cruzamento 1,0 (100\%):} Teve a convergência mais rápida da tabela (geração 33,9) e custo baixo, mas o resultado foi ruim (-2.854).
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Enxame de Partículas (PSO)}
+
+\hspace{4ex}Para iniciar a analise do PSO começamos fixando os valores dos coeficientes de aceleração Cognitivo ($C_1$) e Social ($C_2$) em 2. Lembrando que nosso o de inercia é dinâmico começando baixo e conforme as iterações vão aumentando o valor de inercia também aumenta.
+
+\subsubsection{Partículas=10 Cognitivo ($C_1$)=2 Social ($C_2$)=2}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=10 c1=2 c2=2.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img23}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=10 c1=2 c2=2 barras .png}
+		\caption{Estatísticas}
+		\label{fig:img24}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{Partículas=30 Cognitivo ($C_1$)=2 Social ($C_2$)=2}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=30 c1=2 c2=2.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img25}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=30 c1=2 c2=2 barras .png}
+		\caption{Estatísticas}
+		\label{fig:img26}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{Partículas=50 Cognitivo ($C_1$)=2 Social ($C_2$)=2}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=50 c1=2 c2=2.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img27}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=50 c1=2 c2=2 barras .png}
+		\caption{Estatísticas}
+		\label{fig:img28}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{Partículas=100 Cognitivo ($C_1$)=2 Social ($C_2$)=2}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=100 c1=2 c2=2.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img29}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=100 c1=2 c2=2 barras .png}
+		\caption{Estatísticas}
+		\label{fig:img30}
+	\end{minipage}
+	
+\end{figure}
+
+\hspace{4ex}Agora fixamos a quantidade de partículas em 30 e passaremos a analisar os parâmetros de aceleração Cognitivo ($C_1$) e Social ($C_2$).
+
+\subsubsection{Partículas=30 Cognitivo ($C_1$)=0.5 Social ($C_2$)=0.5}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=30 c1=0.5 c2=0.5.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img31}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=30 c1=0.5 c2=0.5 barras .png}
+		\caption{Estatísticas}
+		\label{fig:img32}
+	\end{minipage}
+	
+\end{figure}
+
+
+\subsubsection{Partículas=30 Cognitivo ($C_1$)=2 Social ($C_2$)=2}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=30 c1=2 c2=2.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img33}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=30 c1=2 c2=2 barras .png}
+		\caption{Estatísticas}
+		\label{fig:img34}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{Partículas=30 Cognitivo ($C_1$)=3.5 Social ($C_2$)=0.5}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=30 c1=3.5 c2=0.5.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img35}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=30 c1=3.5 c2=0.5 barras .png}
+		\caption{Estatísticas}
+		\label{fig:img36}
+	\end{minipage}
+	
+\end{figure}
+
+
+\subsubsection{Partículas=30 Cognitivo ($C_1$)=0.5 Social ($C_2$)=3.5}
+
+\begin{figure}[H]
+	\centering
+	
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=30 c1=0.5 c2=3.5.png}
+		\caption{Sumário de Desempenho}
+		\label{fig:img37}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{./imgs/analise_PSO/part=30 c1=0.5 c2=3.5 barras .png}
+		\caption{Estatísticas}
+		\label{fig:img38}
+	\end{minipage}
+	
+\end{figure}
+
+\subsubsection{Tabela de consolidação dos dados levantados:}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lrrrr}
+		\hline
+		\textbf{N} & 
+		\textbf{Configuração} & 
+		\textbf{Total de Cálculos} &
+		\textbf{Geração} &
+		\textbf{Melhor Valor} \\
+		\hline
+		1 &  part=10 c1=2 c=2        & 32329  & 76,1 & -2607,3  \\
+		2 &  part=30 c1=0.5 c=0.5    & 106220 & 79,9 & -2999,67 \\
+		3 &  part=30 c1=0.5 c=3.5    & 89586  & 76,3 & -2987,84 \\
+		4 &  part=30 c1=2 c=2        & 106559 & 84,8 & -2987,85 \\
+		5 &  part=30 c1=3.5 c=0.5    & 95082  & 78,4 & -3307,46 \\
+		6 &  part=50 c1=2 c=2        & 183801 & 95,0 & -3308,26 \\
+		7 &  part=100 c1=2 c=2       & 345454 & 81,0 & -3148,02 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\hspace{4ex}Diferente do AG, onde a população maior ajudou até certo ponto, aqui vemos que a personalidade das partículas ($c_1$ vs $c_2$) teve um impacto mais decisivo na eficiência do que o tamanho bruto do enxame.
+
+\begin{enumerate}
+	
+	\item \textbf{Análise do Tamanho do Enxame} Comparando as linhas onde mantivemos o padrão $c_1=2, c_2=2$ (linhas 1, 4, 6 e 7):
+	\begin{itemize}
+		\item \textbf{Enxame Pequeno (10 - Linha 1):}Resultado muito fraco (-2.607) com custo baixo (32k). O enxame não teve cobertura suficiente para encontrar as bacias de atração profundas.
+		
+		\item \textbf{Enxame Médio (30 - Linha 4):}Melhorou significativamente para -2.987, mas o custo triplicou.
+		
+		\item \textbf{Enxame Grande (50 - Linha 6):} Aqui temos um salto de qualidade. O valor caiu para -3.308,26 (o melhor valor de toda a tabela).
+		
+		\item \textbf{Enxame Muito Grande (100 - Linha 7):} Aqui ocorre o fenômeno de ineficiência. O custo foi exorbitante (345k cálculos), mas o resultado (-3.148) foi pior que o enxame de 50.
+	\end{itemize}
+	
+	\item \textbf{Coeficientes de Aceleração}:
+	\begin{itemize}
+		\item \textbf{Individualista}: A configuração com $c_1=3.5$ (Cognitivo Alto) e $c_2=0.5$ (Social Baixo) obteve o melhor resultado absoluto do grupo de 30 partículas (-3.307,46). Isso sugere que, para a função trabalhada (que é complexa e cheia de mínimos locais), é mais vantajoso deixar as partículas explorarem suas próprias descobertas (memória individual) do que seguir cegamente o líder. A alta autonomia evitou a convergência prematura.
+		
+		\item \textbf{O Padrão e Social (Linhas 4 e 3):} O padrão ($2/2$) e o Social Forte ($0.5/3.5$) tiveram desempenhos praticamente idênticos e inferiores (-2.987). Isso indica que "seguir o líder" ($c_2$ alto ou médio) tende a prender o enxame em mínimos locais em torno de -2.900, impedindo-os de alcançar o nível de -3.300.
+		
+	\end{itemize} 
+\end{enumerate}
+
+\hspace{4ex}A análise da Tabela 2 demonstra que o algoritmo PSO beneficiou-se fortemente de um comportamento mais 'individualista' para a função $W_{29} + W_1$. A configuração com 30 partículas e ênfase no componente cognitivo ($c_1=3.5, c_2=0.5$) atingiu um valor de aptidão (-3.307) comparável ao obtido pelo enxame de 50 partículas (-3.308), porém com uma redução de aproximadamente 48\% no custo computacional (95 mil cálculos contra 183 mil).
+
+Adicionalmente, observou-se que o aumento excessivo do enxame (100 partículas) resultou em degradação de desempenho (-3.148) e custo proibitivo, sugerindo dificuldades de coordenação ou convergência prematura em um espaço de busca saturado. O enxame pequeno (10 partículas) mostrou-se incapaz de explorar adequadamente o domínio, estagnando em mínimos locais inferiores.
+
+\subsection{Comparação de Desempenho: AG vs. PSO}
+
+\hspace{4ex}Confrontando os resultados obtidos pelos dois algoritmos na minimização da função $W_{29} + W_1$. A comparação baseia-se nas melhores configurações identificadas nas etapas anteriores: o Algoritmo Genético (AG) com população de 50 indivíduos ($Mut=5\%, Cruz=70\%$) e o PSO com enxame de 30 partículas e perfil individualista ($c_1=3.5, c_2=0.5$).
+
 
 \newpage
 
@@ -262,12 +833,9 @@ técnicos realizados durante todo o trabalho.
 \section{CONCLUSÃO}
 
 
-\hspace{4ex}A conclusão, além de guardar uma proporção relativa ao tamanho do trabalho,
-deve guardar uma proporcionalidade também quanto ao conteúdo. Não deve conter
-assuntos desnecessários, nem exageros numa linguagem excessivamente técnica e
-rebuscada. A conclusão deve dar respostas às questões do trabalho, correspondente aos
-objetivos propostos. Deve ser breve, podendo, se necessário, apresentar sugestões para
-pesquisas futuras.
+\hspace{4ex}A análise da Tabela 1 revela que a configuração com População de 50 indivíduos, Taxa de Mutação de 5\% e Cruzamento de 70\% apresentou a melhor eficiência global. Embora a população de 100 indivíduos tenha encontrado o mínimo absoluto (-3.225), ela exigiu um esforço computacional 204\% maior para um ganho marginal na qualidade da solução (apenas 2,8\% melhor).
+
+Além disso, observou-se que taxas de mutação elevadas (20\%) podem melhorar a busca em espaços complexos, mas atrasam significativamente a convergência (Geração 61), enquanto populações pequenas (20) sofrem severamente com convergência prematura em mínimos locais ruins.
 
 \newpage
 
