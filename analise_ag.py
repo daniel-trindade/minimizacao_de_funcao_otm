@@ -14,13 +14,13 @@ PARAMETROS_AG = {
     "tamanho_populacao": 50, 
     "limites": (-500, 500), 
     "num_geracoes": 200, 
-    "taxa_cruzamento": 0.8, 
-    "taxa_mutacao": 0.2, 
+    "taxa_cruzamento": 0.7, 
+    "taxa_mutacao": 0.05, 
     "geracoes_sem_melhora_limite": 20, 
     "tolerancia": 1e-6 
 }
 
-NUM_SIMULACOES = 10
+NUM_SIMULACOES = 20
 OUTPUT_FOLDER_ANALYSIS = "resultados_analise_ag"
 OUTPUT_FOLDER_SUMMARY = os.path.join(OUTPUT_FOLDER_ANALYSIS, "sumario_estatistico")
 

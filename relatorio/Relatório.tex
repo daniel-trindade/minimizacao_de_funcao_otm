@@ -16,7 +16,21 @@
 \fancyhead[RO]{\thepage}
 \fancyfoot[CO]{}
 }
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%INSERÇÃO DE CÓDIGO%%%%%%%%%%%%%%%
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	commentstyle=\color{gray},
+	stringstyle=\color{green!50!black},
+	breaklines=true,
+	frame=single,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{graphicx}
 \usepackage{epstopdf}
@@ -113,19 +127,13 @@ DANIEL BRUNO TRINDADE DA SILVA - 20230093910\\
 
 \begin{flushleft}
 
-\hspace{4ex}Trata-se da apresentação fiel, breve e concisa dos aspectos mais relevantes do
-trabalho, apresentando as ideias essenciais, na mesma progressão e no mesmo
-encadeamento que aparecem no texto. O resumo deve apresentar os objetivos, uma
-visão geral, ampla e, ao mesmo tempo, clara e objetiva do conteúdo do trabalho.\\
-\hspace{4ex}A norma da ABNT recomenda que se use de 150 a 500 palavras, em espaço
-simples, e deve-se usar o verbo na voz ativa e na terceira pessoa singular. Logo abaixo,
-devem ser colocadas as palavras-chave.\\
+Este trabalho apresenta a implementação e a análise comparativa de duas metaheurísticas de otimização, o Algoritmo Genético (AG) e a Otimização por Enxame de Partículas (PSO), aplicadas à minimização da função objetivo multimodal $W_{29} + W_1$. O objetivo principal consistiu em avaliar não apenas a capacidade de convergência para o mínimo global, mas também o custo computacional associado a cada abordagem. A metodologia envolveu o desenvolvimento dos algoritmos em linguagem Python e a execução de um planejamento fatorial de experimentos, variando-se parâmetros críticos como tamanho da população, taxas de cruzamento e mutação para o AG, e coeficientes de aceleração e tamanho do enxame para o PSO. A análise estatística baseou-se em métricas consolidadas de 10 execuções independentes para cada cenário de teste. Os resultados demonstraram que o AG obteve sua melhor eficiência com uma população de 50 indivíduos, enquanto o PSO exigiu uma configuração comportamental "individualista" ($c_1 > c_2$) para superar mínimos locais. Conclui-se que houve uma distinção clara de desempenho: o PSO mostrou-se superior na precisão absoluta da solução final, atingindo os menores valores de função, enquanto o AG destacou-se pela eficiência, alcançando resultados competitivos com um custo computacional (número de avaliações da função) significativamente inferior.
 
 \end{flushleft}
 
 \vspace{1.5cm}
 
-\textbf{Palavras-chave:}
+\textbf{Palavras-chave:}Otimização Heurística. Algoritmos Genéticos. Enxame de Partículas (PSO). Custo Computacional. Minimização de Funções.
 
 \newpage
 
@@ -821,7 +829,31 @@ Adicionalmente, observou-se que o aumento excessivo do enxame (100 partículas) 
 
 \subsection{Comparação de Desempenho: AG vs. PSO}
 
-\hspace{4ex}Confrontando os resultados obtidos pelos dois algoritmos na minimização da função $W_{29} + W_1$. A comparação baseia-se nas melhores configurações identificadas nas etapas anteriores: o Algoritmo Genético (AG) com população de 50 indivíduos ($Mut=5\%, Cruz=70\%$) e o PSO com enxame de 30 partículas e perfil individualista ($c_1=3.5, c_2=0.5$).
+\hspace{4ex}Confrontando os resultados obtidos pelos dois algoritmos na minimização da função $W_{29} + W_1$. A comparação baseia-se nas melhores configurações identificadas nas etapas anteriores, ou seja, a configuração que trouxe o melhor custo beneficio: Algoritmo Genético (AG) com população de 50 indivíduos ($Mut=5\%, Cruz=70\%$) e o PSO com enxame de 30 partículas e perfil individualista ($c_1=3.5, c_2=0.5$).
+
+\subsubsection{Qualidade da Solução}
+\hspace{4ex}Em termos absolutos, levando em consideração apenas o menor valor que o algoritmo encontrou, o PSO conseguiu se sair melhor. O menor valor  encontrado para a função foi de $-3.307,46$ enquanto que o menor valor encontrado pelo AG foi de $-3.135,21$
+
+\subsubsection{Eficiência Computacional}
+
+\hspace{4ex}Ao analisar o esforço necessário para atingir tais resultados, o cenário se inverte, revelando um \textit{trade-off} importante:
+
+\begin{itemize}
+	\item \textbf{Eficiência do AG:} O AG configurado com 50 indivíduos atingiu um resultado muito competitivo (-3.135) consumindo apenas 37.015 cálculos.
+	
+	\item \textbf{Custo do PSO:} Para superar o AG e atingir a faixa de -3.300, o PSO (configuração individualista) necessitou de 95.082 cálculos.
+\end{itemize}
+Isso indica que o Algoritmo Genético foi aproximadamente 2,5 vezes mais eficiente em termos de operações por nível de qualidade. O PSO exigiu um esforço computacional desproporcionalmente maior para obter um ganho marginal de precisão (cerca de 5\% melhor no valor da função).
+
+\subsubsection{Sensibilidade e Convergência}
+
+A análise das tabelas revela comportamentos distintos de robustez:
+
+\begin{itemize}
+	\item \textbf{Dependência de Parâmetros:} O PSO mostrou-se altamente sensível à calibração dos coeficientes de aceleração. A configuração padrão ($c_1=2, c_2=2$) com 30 partículas estagnou em -2.987, enquanto o ajuste para $c_1=3.5$ desbloqueou o potencial do algoritmo para -3.307. Já o AG mostrou-se mais estável; as variações de mutação (0,05 vs 0,2) e cruzamento mantiveram os resultados numa faixa consistente (-3.135 a -3.180).
+	
+	\item \textbf{Velocidade de Convergência:} O AG tendeu a convergir mais cedo em termos de gerações (média de 38 a 48 gerações para as melhores configurações). O PSO, devido à inércia dinâmica, manteve a busca ativa por mais tempo, convergindo tipicamente entre as iterações 78 e 95.
+\end{itemize}
 
 
 \newpage
@@ -833,21 +865,58 @@ Adicionalmente, observou-se que o aumento excessivo do enxame (100 partículas) 
 \section{CONCLUSÃO}
 
 
-\hspace{4ex}A análise da Tabela 1 revela que a configuração com População de 50 indivíduos, Taxa de Mutação de 5\% e Cruzamento de 70\% apresentou a melhor eficiência global. Embora a população de 100 indivíduos tenha encontrado o mínimo absoluto (-3.225), ela exigiu um esforço computacional 204\% maior para um ganho marginal na qualidade da solução (apenas 2,8\% melhor).
+\hspace{4ex}O presente trabalho cumpriu o objetivo de implementar e analisar comparativamente o Algoritmo Genético (AG) e a Otimização por Enxame de Partículas (PSO) na minimização da função objetivo complexa $W_{29} + W_1$. Através de uma metodologia experimental rigorosa, baseada em múltiplas execuções e contagem de operações aritméticas, foi possível traçar o perfil de desempenho de cada técnica.
 
-Além disso, observou-se que taxas de mutação elevadas (20\%) podem melhorar a busca em espaços complexos, mas atrasam significativamente a convergência (Geração 61), enquanto populações pequenas (20) sofrem severamente com convergência prematura em mínimos locais ruins.
+Em relação ao Algoritmo Genético, conclui-se que o tamanho da população é o fator determinante para o equilíbrio entre custo e qualidade. A configuração com 50 indivíduos (com taxa de cruzamento de 70\% e mutação de 5\%) revelou-se o "ponto ótimo" de eficiência1, atingindo uma solução de alta qualidade (-3.135) com baixo custo computacional. Observou-se que o aumento da população para 100 ou 200 indivíduos gera retornos decrescentes, onde o custo computacional cresce exponencialmente para ganhos marginais na precisão da solução.
+
+Quanto ao Enxame de Partículas (PSO), os resultados demonstraram uma forte sensibilidade aos parâmetros comportamentais. A configuração padrão equilibrada ($C_1=2, C_2=2$) mostrou-se propensa à estagnação em mínimos locais para esta função específica. A descoberta mais relevante foi a superioridade do perfil "Individualista" ($C_1=3.5, C_2=0.5$), que permitiu ao enxame explorar o espaço de busca com maior autonomia, evitando a convergência prematura e atingindo o melhor valor absoluto encontrado em todo o estudo (-3.307).
+
+No confronto direto entre as duas abordagens, evidencia-se um claro \textit{trade-off}:
+
+\begin{enumerate}
+	\item \textbf{Qualidade Absoluta:} O PSO foi superior, sendo o único capaz de romper a barreira de -3.300 na minimização da função, demonstrando maior capacidade de refinamento fino (\textit{exploitation}) nas etapas finais da busca.
+	
+	\item \textbf{Eficiência Computacional:} O AG destacou-se pela eficiência. Para encontrar uma solução competitiva (-3.135), o AG necessitou de apenas 37.015 cálculos, enquanto o PSO exigiu 95.082 cálculos para superar esse resultado. Isso torna o AG aproximadamente 2,5 vezes mais eficiente em termos de processamento por nível de qualidade.
+\end{enumerate}
+
+
+Portanto, para a função $W_{29} + W_1$, a recomendação final depende da prioridade do projeto: se o objetivo for a precisão máxima, recomenda-se o PSO com perfil cognitivo alto; se a prioridade for a economia de recursos computacionais com resultados satisfatórios, o Algoritmo Genético é a escolha mais adequada.
 
 \newpage
 
-%%%%%%%% REFERÊNCIAS %%%%%%%%%%%%%%%%%
+%%%%%%%% REFERÊNCIAS (MÉTODO MANUAL) %%%%%%%%%%%%%%%%%
 
-% Referências bibliogáficas (geradas automaticamente)
+% Adiciona ao Sumário
 \addcontentsline{toc}{chapter}{Referências bibliográficas}
-\bibliography{bib/bibliografia}
+
+% O número {99} indica a largura máxima do rótulo da referência
+\begin{thebibliography}{99}
+	
+	% 1. Holland (1975)
+	\bibitem{holland1975adaptation}
+	HOLLAND, John H. \textit{Adaptation in Natural and Artificial Systems}. Ann Arbor: University of Michigan Press, 1975.
+	
+	% 2. Goldberg (1989)
+	\bibitem{goldberg1989genetic}
+	GOLDBERG, David E. \textit{Genetic Algorithms in Search, Optimization, and Machine Learning}. Reading: Addison-Wesley, 1989.
+	
+	% 3. Kennedy & Eberhart (1995)
+	\bibitem{kennedy1995particle}
+	KENNEDY, James; EBERHART, Russell. Particle Swarm Optimization. In: \textit{Proceedings of ICNN'95 - International Conference on Neural Networks}. Perth: IEEE, 1995. v. 4, p. 1942--1948.
+	
+	% 4. Shi & Eberhart (1998)
+	\bibitem{shi1998modified}
+	SHI, Yuhui; EBERHART, Russell. A modified particle swarm optimizer. In: \textit{1998 IEEE International Conference on Evolutionary Computation Proceedings}. Anchorage: IEEE, 1998. p. 69--73.
+	
+	% 5. Herrera et al. (1998)
+	\bibitem{herrera1998tackling}
+	HERRERA, Francisco; LOZANO, Manuel; VERDEGAY, Jose L. Tackling real-coded genetic algorithms: Operators and tools for behavioural analysis. \textit{Artificial Intelligence Review}, v. 12, n. 4, p. 265--319, 1998.
+	
+\end{thebibliography}
 
 \appendix
+% ... seus apêndices continuam aqui ...
+\appendix
 
-%Apêndice A
-\include{apendice}
 
 \end{document}
